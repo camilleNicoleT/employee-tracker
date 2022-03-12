@@ -1,0 +1,22 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camilleNicoleT/employee-tracker.git"
+  },
+  "homepage": "https://github.com/camilleNicoleT/employee-tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.1",
+    "install": "^0.13.0",
+    "mysql2": "^2.3.3",
+    "npm": "^0.0.1"
+  }
+}
