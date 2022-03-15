@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const db = require('../../db/connection');
 
 const promptInit = () => {
     return inquirer
@@ -7,7 +8,7 @@ const promptInit = () => {
     {
         type: 'list',
         name: 'action',
-        message: "What would you like to do? (arrows to find role, <enter> to submit)",
+        message: "What would you like to do? (arrows to find action, <enter> to submit)",
         choices: ['Add Department', 'Add Role', 'Add Employee', 'Update Current Employee' ]
     },
 
@@ -17,166 +18,164 @@ const promptInit = () => {
         department();
 } else if (answer.action === 'Add Role') {
         addRole();
-} else if (answers.actio === 'Add Employee') {
+} else if (answer.action === 'Add Employee') {
         addEmployee();
-} else if (answers.actio === 'Update Current Employee'){
+} else if (answer.action === 'Update Current Employee'){
         updateEmployee();
 }
 })
-}
+};
 
 const addEmployee = () => {
     return inquirer
     .prompt([
     {
       type: 'input',
-      name: 'name',
+      name: 'first_name',
       message: 'What is the employees first name? (Required)',
-      when: (input) => input.action === 'Add Employee',
-    } {
-        type: 'input',
-        name; 'last_name',
-        message:
-    }
-
-      validate: nameInput => {
-        if (nameInput) {
+      validate: first_name => {
+        if (first_name) {
           return true;
         } else {
-         console.log('Please enter employee name!');
+          console.log('Please enter employee name!');
+          return false;
+        }
+      },
+    },
+    {
+        type: 'input',
+        name: 'last_name',
+        message: "What is the employee's last name?",
+        validate: last_name => {
+            if (last_name) {
+              return true;
+            } else {
+              console.log('Please enter employee last name!');
+              return false;
+            }
+          },
+    },
+    {
+        type: 'input',
+        name: 'role',
+        message: "What is the employee's role?",
+        validate: role => {
+        if (role) {
+          return true;
+        } else {
+         console.log('Please enter employee role!');
          return false;
         }
       },
-
-      },
-      {
-        type: 'input',
-        name: 'name',
-        message: 'What is the employees first name? (Required)',
-        validate: nameInput => {
-          if (nameInput) {
-            return true;
-          } else {
-            console.log('Please enter employee name!');
-            return false;
-          }
-        },
-      },
-      {
-        type: 'list',
-        name: 'role',
-        message: "What is the employee's role? (arrows to find role, <enter> to submit)",
-        choices: ['Engineer', 'Intern', 'Manager']
     },
-      {
-        type: 'input',
-        name: 'id',
-        message: 'What is the employees role?',
-        validate: idInput => {
-          if (idInput) {
-            return true;
-          } else {
-            console.log('Please enter employee role!');
-            return false;
-          }
-        },
-      },
+      
       {
         type: 'input',
         name: 'email',
-        message: 'Who is the manager of employee? (Required)',
+        message: 'Who is the manager of employee? ',
       },
-      {
-        type: 'input',
-        name: 'email',
-        message: 'What is the employees email? (Required)',
-        validate: emailInput => {
-          if (emailInput) {
-            return true;
-          } else {
-            console.log('Please enter employee email!');
-            return false;
-          }
-        },
-      },
+    ])
+    .then(newEmployee => {
+       // addEmployee.push(newEmployee);
+        //console.table(newEmployee);
+        console.log(JSON.stringify(first_name) + 'added to the Database')
+        return promptInit();
+    })
+};
     
+
+const department = () => {
+    return inquirer
+.prompt([
     {  
     type: 'input',
     name: 'addDepartment',
-    message: "What is the Engineer's github profile?",
-    when: (input) => input.action === 'Add Department',
-    validate: input => {
-      if (input) {
-        return true;
-      } else {
-        console.log('Please enter the github profile name!');
-        return false;
-      }
-    },
-  }, 
-  {  
-    type: 'input',
-    name: 'newEmployee',
-    message: "What is the Employee's First Name? (Required)",
-    when: (input) => input.action === 'Employee',
-    validate: input => {
-      if (input) {
-        return true;
-      } else {
-        console.log("Please enter the employee's first name");
-        return false;
-      }
-    },
-    },
+    message: "What is the name of the department?",
+    validate: addDepartment => {
+        if (addDepartment) {
+          return true;
+        } else {
+         console.log('Please enter department!');
+         return false;
+        }
+    }
+}
+])
+.then(newDepartment => {
+   // department.push(newDepartment);
+    console.log(newDepartment + ' added to the Database')
+     return promptInit();
+ }) 
+};
+
+const addRole = () => {
+    return inquirer
+.prompt([
     {  
     type: 'input',
-    name: 'officeNumber',
-    message: "What is the Manager's office number?",
-    when: (input) => input.role === 'Manager',
-    validate: input => {
-      if (input) {
-        return true;
-      } else {
-        console.log('Please enter the office number for Manager');
-        return false;
-      }
+    name: 'addRole',
+    message: "What is the title of the role?",
+    validate: addRole => {
+        if (addRole) {
+          return true;
+        } else {
+         console.log('Please enter role title!');
+         return false;
+        }
+    }
+},
+{  
+    type: 'input',
+    name: 'salary',
+    message: "What is the salary of the role?",
     },
-  },
-{
-    type: 'confirm',
-    name: 'confirmAdd',
-    message: 'Would you like to enter another employee?',
-    default: false
-  },
+
 ])
-    return prompt;
-}
+.then(newRole => {
+    //role.push(newRole);
+    console.table(JSON.stringify('addRole') + ' added to the Database');
+    console.log(newRole);
+     return promptInit();
+ }) 
+};
 
-.then(employeeData => {
- var { role, name, id, email, github, school, officeNumber, confirmAdd} = employeeData;
-//  var employee;
-//   if (role ==='Director') {
-//     employee = new Engineer (name, id, email, role, github);
-    
-//   } else if (role === 'Assitant') {
-//     employee = new Intern (name, id, email, role, school);
-//   } 
-//   else if (role === 'Coordinator') {
-//     employee = new Manager (name, id, email, role, officeNumber);
-//   }
-//   else if (role === 'Manager') {
-//     employee = new Manager (name, id, email, role, officeNumber);
+const updateEmployee = () => {
+    return inquirer
+.prompt([
+    {  
+    type: 'list',
+    name: 'update',
+    message: "Which employee would you like to update?",
+    choices: [],
+   
+},
+{  
+    type: 'input',
+    name: 'updatedRole',
+    message: "What is the employee's updated role?",
+},
+{  
+    type: 'input',
+    name: 'salary',
+    message: "What is the salary of the updated role?",
+},
+])
+.then(newRole => {
+    //role.push(newRole);
+    console.log('Employee has been updated')
+     return promptInit();
+ }) 
+};
 
-// team.push(employee)
-console.table(employee);
+// // team.push(employee)
+// console.table(employee);
 
 
 // if (finished action) {
-//   return prompt();
+//   return promptInit();
 // } else{
 //   return team;
 // }
 
-});
 
 promptInit();

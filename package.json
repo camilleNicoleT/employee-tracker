@@ -14,9 +14,9 @@
   "homepage": "https://github.com/camilleNicoleT/employee-tracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
+    "express": "^4.17.3",
     "inquirer": "^8.2.1",
     "install": "^0.13.0",
-    "mysql2": "^2.3.3",
-    "npm": "^0.0.1"
+    "mysql2": "^2.3.3"
   }
 }
