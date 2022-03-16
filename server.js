@@ -1,6 +1,7 @@
 const express = require('express');
+const apiRoutes = require('./routes/apiRoutes');
+const db = require('./db/connection');
 
-const mysql = require('mysql2')
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -19,3 +20,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+

@@ -3,8 +3,12 @@ const router = express.Router();
 const db = require('../../db/connection');
 const cTable = require('console.table');
 
-router.get('/api/employees', (req, res) => {
-    const sql = `SELECT * FROM employees`;
+//express middleware
+router.use(express.urlencoded({extended: false }));
+router.use(express.json());
+
+router.get('/department', (req, res) => {
+    const sql = `SELECT * FROM department`;
   
     db.query(sql, (err, rows) => {
       if (err) {
@@ -18,8 +22,8 @@ router.get('/api/employees', (req, res) => {
     });
   });
 
-router.get('/api/employee/:id', (req, res) => {
-    const sql = `SELECT * FROM employees WHERE id = ?`;
+router.get('/department/:id', (req, res) => {
+    const sql = `SELECT * FROM department WHERE id = ?`;
     const params = [req.params.id];
 
     db.query(sql, params, (err, rows) => {
@@ -34,20 +38,18 @@ router.get('/api/employee/:id', (req, res) => {
     });
   });
 
-//create an employee
-  router.post('/api/employee', ({ body }, res) => {
+//create an department
+router.post('/department', ({ body }, res) => {
     const errors = inputCheck(
-        body,
-        'first_name', 'last_name',
-        'role_id', 'manager_id'
+        body, 'title', 'salary'
       );
       if (errors) {
         res.status(400).json({ error: errors });
         return;
       }
-      const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+      const sql = `INSERT INTO department (title, salary)
       VALUES (?,?,?)`;
-    const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+    const params = [body.title, body.salary];
   
     db.query(sql, params, (err, result) => {
       if (err) {
@@ -61,18 +63,10 @@ router.get('/api/employee/:id', (req, res) => {
     });
   });
 
-router.put('/api/employee/:id', (req, res) => {
-    // Employee is allowed to not have manager
-    const errors = inputCheck(req.body, 'manager_id');
-    if (errors) {
-      res.status(400).json({ error: errors });
-      return;
-    }
-});
 
-  //delete an employee
-  router.delete('/api/employee/:id', (req, res) => {
-    const sql = `DELETE FROM employees WHERE id = ?`;
+  //delete a department
+  router.delete('/department/:id', (req, res) => {
+    const sql = `DELETE FROM department WHERE id = ?`;
     const params = [req.params.id];
 
     db.query(sql, params, (err, rows) => {
@@ -80,7 +74,7 @@ router.put('/api/employee/:id', (req, res) => {
         res.statusMessage(400).json({ error: res.message });
     } else if (!result.affectedRows) {
       res.json({
-        message: 'Employee not found'
+        message: 'department not found'
       });
     } else {
       res.json({
@@ -91,5 +85,5 @@ router.put('/api/employee/:id', (req, res) => {
     }
     });
   });
-  
+
 module.exports = router;

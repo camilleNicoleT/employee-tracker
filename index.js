@@ -2,6 +2,12 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const db = require('../../db/connection');
 
+router.use(require('./employeeRoutes'));
+router.use(require('./roleRoutes'));
+router.use(require('./departmentRoutes'));
+
+
+
 const promptInit = () => {
     return inquirer
     .prompt([
