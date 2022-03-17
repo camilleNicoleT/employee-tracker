@@ -2,8 +2,6 @@ const inquirer = require('inquirer');
 const db = require('./db/connection');
 const cTable = require('console.table');
 const connect = require('./db/connection');
-var employees = "";
-var roles = "";
 
 db.connect(err => {
   if(err) throw err;
@@ -42,32 +40,7 @@ const promptInit = () => {
 }
 });
 }
-function viewEmployees() {
-  var query =  `SELECT * FROM employees
-                LEFT JOIN roles
-                ON employees.role_id = roles.id
-                LEFT JOIN department
-                ON department.id = roles.department_id`;
 
-  connect.query(query, function (err, res){
-    if (err) throw err;
-    console.table(res);
-
-    promptInit();
-  })
-}
-function viewRoles() {
-  var query =  `SELECT * FROM roles
-                LEFT JOIN department
-                ON department.id = roles.department_id`;
-
-  connect.query(query, function (err, res){
-    if (err) throw err;
-    console.table(res);
-
-    promptInit();
-  })
-}
 
 //View the Department table
 function viewDepartments() {
@@ -82,6 +55,7 @@ function viewDepartments() {
 }
 //Adding an Employee to the database
 function addEmployee () {
+  
     return inquirer
     .prompt([
     {
@@ -221,8 +195,7 @@ function getEmployee (employees, roles){
   var query = `SELECT * FROM employees`;
     connect.query(query, function (err, res) {
       if(err) throw err;
-      console.table(res);
-
+      
       const employees = res.map(({id, first_name, last_name}) => ({
         value: id, name: `${first_name} ${last_name}`
       }));
@@ -234,12 +207,11 @@ function getRole() {
   var query = `SELECT * FROM roles`;
   connect.query(query, function (err, res) {
     if(err) throw err;
-    console.table(res);
-
+    
     const roles = res.map(({id, title}) => ({
       value: id, name: `${id} ${title}`
     })); 
-    console.table(roles);
+    // console.table(roles);
     
   })
   updateEmployee(employees, roles)
@@ -269,17 +241,18 @@ function updateEmployee(employees, roles) {
   ])
   .then(function (answer) {
 
-    var query = `UPDATE employees SET role_id = ? AND salary = ? WHERE id = ?`
+    var query = `UPDATE employees SET role_id = ? WHERE id = ?`
 
     connect.query(query,
       [
-        answer.updatedRole, answer.updatedEmp, answer.updatedSalary
+        answer.updatedEmp, answer.updatedRole
       ],
       function (err, res) {
         if(err) throw err;
         console.log('Employee has been updated')
         console.table(answer);
+        promptInit();    
       })
-      promptInit();    
+    
   })
 };
