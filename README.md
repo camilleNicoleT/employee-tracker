@@ -1,5 +1,8 @@
 # Employee Tracker
 
+Demonstration Video: https://drive.google.com/file/d/1LrQkAXaaWgwA4y-6bZ271ctPCsCbAoJt/view
+Github Link: https://github.com/camilleNicoleT/employee-tracker
+
 ## Description
 The User can track and update employee information all from their command line!
 
