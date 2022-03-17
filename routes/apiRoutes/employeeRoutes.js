@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../db/connection');
-const cTable = require('console.table');
-const inputCheck = require('../../utils/inputCheck');
 
 //express middleware
 router.use(express.urlencoded({extended: false }));
@@ -41,15 +39,7 @@ router.get('/employee/:id', (req, res) => {
 
 //create an employee
   router.post('/employee', ({ body }, res) => {
-    const errors = inputCheck(
-        body,
-        'first_name', 'last_name',
-        'role_id', 'manager_id'
-      );
-      if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-      }
+    
       const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
       VALUES (?,?,?)`;
     const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
@@ -66,14 +56,6 @@ router.get('/employee/:id', (req, res) => {
     });
   });
 
-router.put('/employee/:id', (req, res) => {
-    // Employee is allowed to not have manager
-    const errors = inputCheck(req.body, 'manager_id');
-    if (errors) {
-      res.status(400).json({ error: errors });
-      return;
-    }
-});
 
   //delete an employee
   router.delete('/employee/:id', (req, res) => {
