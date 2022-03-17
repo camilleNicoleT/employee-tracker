@@ -1,7 +1,9 @@
 INSERT INTO department 
     (dep_name) 
 VALUES 
-    ('Education'), ('Student Affairs'), ('Admissions');  
+    ('Education'), 
+    ('Student Affairs'), 
+    ('Admissions');  
 
 INSERT INTO roles
     (title, salary, department_id) 
