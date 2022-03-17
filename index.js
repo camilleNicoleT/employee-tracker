@@ -1,21 +1,18 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const db = require('../../db/connection');
-
-router.use(require('./employeeRoutes'));
-router.use(require('./roleRoutes'));
-router.use(require('./departmentRoutes'));
-
-
+const cTable = require('console.table');
+const { connect } = require('./db/connection');
 
 const promptInit = () => {
+ 
     return inquirer
     .prompt([
     {
         type: 'list',
         name: 'action',
         message: "What would you like to do? (arrows to find action, <enter> to submit)",
-        choices: ['Add Department', 'Add Role', 'Add Employee', 'Update Current Employee' ]
+        choices: ['View Employees', 'View Departments', 'View Roles', 'Add Department', 'Add Role', 'Add Employee', 'Update Current Employee', 'End' ]
     },
 
 ])
@@ -64,31 +61,43 @@ const addEmployee = () => {
     {
         type: 'input',
         name: 'role',
-        message: "What is the employee's role?",
+        message: "What is the employee's role ID?",
         validate: role => {
         if (role) {
           return true;
         } else {
-         console.log('Please enter employee role!');
+         console.log('Please enter employee role ID!');
          return false;
         }
       },
     },
-      
       {
         type: 'input',
         name: 'email',
         message: 'Who is the manager of employee? ',
       },
     ])
-    .then(newEmployee => {
-       // addEmployee.push(newEmployee);
-        //console.table(newEmployee);
-        console.log(JSON.stringify(first_name) + 'added to the Database')
-        return promptInit();
+    .then(function (newEmployee) {
+
+      var query = `INSERT INTO employee SET ?`
+
+      connect.query(query,
+        {
+          first_name: newEmployee.first_name,
+          last_name: newEmployee.last_name,
+          role_id: newEmployee.role_id,
+          manager_id: newEmployee.manager_id,
+        },
+          function (err, res) {
+          if(err) throw err;
+          console.table(res);
+          console.log((first_name) + 'added to the Database');
+        
+         return promptInit();
+        }
+      )
     })
-};
-    
+}
 
 const department = () => {
     return inquirer
@@ -107,11 +116,23 @@ const department = () => {
     }
 }
 ])
-.then(newDepartment => {
-   // department.push(newDepartment);
-    console.log(newDepartment + ' added to the Database')
+.then(function (newDep) {
+
+  var query = `INSERT INTO department SET ?`
+
+  connect.query(query,
+    {
+      dep_name: newDep.dep_name,
+    },
+       function (err, res) {
+      if(err) throw err;
+      console.table(res);
+      console.log((newDep.dep_name) + 'added to the Database');
+    
      return promptInit();
- }) 
+    }
+  )
+})
 };
 
 const addRole = () => {
@@ -137,13 +158,27 @@ const addRole = () => {
     },
 
 ])
-.then(newRole => {
-    //role.push(newRole);
-    console.table(JSON.stringify('addRole') + ' added to the Database');
-    console.log(newRole);
+.then(function (newRole) {
+
+  var query = `INSERT INTO roles SET ?`
+
+  connect.query(query,
+    {
+      title: newRole.title,
+      salary: newRole.salary,
+   },
+       function (err, res) {
+      if(err) throw err;
+      console.table(res);
+      console.log((newRole.title) + 'added to the Database');
+    
      return promptInit();
- }) 
+    }
+  )
+})
 };
+
+function updateEmployee()
 
 const updateEmployee = () => {
     return inquirer
@@ -166,22 +201,21 @@ const updateEmployee = () => {
     message: "What is the salary of the updated role?",
 },
 ])
-.then(newRole => {
-    //role.push(newRole);
-    console.log('Employee has been updated')
-     return promptInit();
- }) 
-};
+.then(function (answer) {
 
-// // team.push(employee)
-// console.table(employee);
+  var query = `Update employee SET role_id = ? WHERE id = ?`
+
+  connect.query(query,
+    [
+      answer.role, answer.employee
+    ],
+    function (err, res) {
+      if(err) throw err;
+      console.table(res);
+     console.log('Employee has been updated')
+    })
+    promptInit();
+  })
+}
 
 
-// if (finished action) {
-//   return promptInit();
-// } else{
-//   return team;
-// }
-
-
-promptInit();

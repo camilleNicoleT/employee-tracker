@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../db/connection');
 const cTable = require('console.table');
+const inputCheck = require('../../utils/inputCheck');
 
 //express middleware
 router.use(express.urlencoded({extended: false }));
 router.use(express.json());
 
-router.get('/api/employees', (req, res) => {
+router.get('/employees', (req, res) => {
     const sql = `SELECT * FROM employees`;
   
     db.query(sql, (err, rows) => {
@@ -22,7 +23,7 @@ router.get('/api/employees', (req, res) => {
     });
   });
 
-router.get('/api/employee/:id', (req, res) => {
+router.get('/employee/:id', (req, res) => {
     const sql = `SELECT * FROM employees WHERE id = ?`;
     const params = [req.params.id];
 
@@ -39,7 +40,7 @@ router.get('/api/employee/:id', (req, res) => {
   });
 
 //create an employee
-  router.post('/api/employee', ({ body }, res) => {
+  router.post('/employee', ({ body }, res) => {
     const errors = inputCheck(
         body,
         'first_name', 'last_name',
@@ -65,7 +66,7 @@ router.get('/api/employee/:id', (req, res) => {
     });
   });
 
-router.put('/api/employee/:id', (req, res) => {
+router.put('/employee/:id', (req, res) => {
     // Employee is allowed to not have manager
     const errors = inputCheck(req.body, 'manager_id');
     if (errors) {
@@ -75,7 +76,7 @@ router.put('/api/employee/:id', (req, res) => {
 });
 
   //delete an employee
-  router.delete('/api/employee/:id', (req, res) => {
+  router.delete('/employee/:id', (req, res) => {
     const sql = `DELETE FROM employees WHERE id = ?`;
     const params = [req.params.id];
 
