@@ -40,7 +40,32 @@ const promptInit = () => {
 }
 });
 }
+function viewEmployees() {
+  var query =  `SELECT * FROM employees
+                LEFT JOIN roles
+                ON employees.role_id = roles.id
+                LEFT JOIN department
+                ON department.id = roles.department_id`;
 
+  connect.query(query, function (err, res){
+    if (err) throw err;
+    console.table(res);
+
+    promptInit();
+  })
+}
+function viewRoles() {
+  var query =  `SELECT * FROM roles
+                LEFT JOIN department
+                ON department.id = roles.department_id`;
+
+  connect.query(query, function (err, res){
+    if (err) throw err;
+    console.table(res);
+
+    promptInit();
+  })
+}
 
 //View the Department table
 function viewDepartments() {
@@ -55,7 +80,6 @@ function viewDepartments() {
 }
 //Adding an Employee to the database
 function addEmployee () {
-  
     return inquirer
     .prompt([
     {
@@ -117,7 +141,7 @@ function department() {
 .prompt([
     {  
     type: 'input',
-    name: 'addDepartment',
+    name: 'dep_name',
     message: "What is the name of the department?",
     validate: addDepartment => {
         if (addDepartment) {
@@ -203,7 +227,8 @@ function getEmployee (employees, roles){
      })
 }
 
-function getRole() {
+//show all roles
+function getRole(employees) {
   var query = `SELECT * FROM roles`;
   connect.query(query, function (err, res) {
     if(err) throw err;
@@ -212,9 +237,9 @@ function getRole() {
       value: id, name: `${id} ${title}`
     })); 
     // console.table(roles);
-    
+    updateEmployee(employees, roles)
   })
-  updateEmployee(employees, roles)
+  
 }
 
 function updateEmployee(employees, roles) {
