@@ -173,7 +173,22 @@ function department() {
 };
 
 function addRole() {
-    return inquirer
+  var query = `SELECT * FROM departments`
+  // return connect.query(query,
+  //     function (err, res) {
+  //     if(err) throw err;
+    
+  //    return res;
+  //   }
+  // )
+  connect.promise().query(query)
+  .then( ([rows,fields]) => {
+    console.log(rows);
+    return rows;
+  })
+.then(function (departments) {
+  
+  return inquirer
 .prompt([
     {  
     type: 'input',
@@ -193,16 +208,27 @@ function addRole() {
     name: 'salary',
     message: "What is the salary of the role?",
     },
+    {  
+      type: 'list',
+      name: 'department',
+      message: "What Department?",
+      choices: departments.map(dep => ({
+        name: dep.dep_name, 
+        value: dep.id
+        }))
+      },
 
 ])
+})
 .then(function (newRole) {
-
+  console.log(newRole)
   var query = `INSERT INTO roles SET ?`
 
   connect.query(query,
     {
       title: newRole.title,
       salary: newRole.salary,
+      department_id: newRole.department
    },
        function (err, res) {
       if(err) throw err;
